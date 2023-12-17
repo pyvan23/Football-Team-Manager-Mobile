@@ -238,7 +238,7 @@ const Jugadores = () => {
   };
 
   const jugadoresOrdenados = jugadores;
-  const urlImagenFondo = require('../../assets/07-Carta-Oro-optimizada-removebg-preview.png');
+ 
 
   return (
     <>
@@ -280,7 +280,7 @@ const Jugadores = () => {
         isOpen={modalIsOpen}
         onClose={() => setModalIsOpen(false)}
         jugador={selectedJugador}
-        urlImagenFondo={urlImagenFondo}
+       
         styles={styles}
       />
     </>
