@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Modal,
   View,
@@ -7,16 +7,14 @@ import {
   Image,
   StyleSheet,
 } from "react-native";
-
+import fotoCara from '../../assets/fotoCara.png'
+import urlImagenFondo from '../../assets/07-Carta-Oro-optimizada-removebg-preview.png'
 const ModalComponent = ({ isOpen, onClose,  jugador }) => {
  
-  const fotoCara = require('../../assets/fotoCara.png');
-  const urlImagenFondo = require('../../assets/07-Carta-Oro-optimizada-removebg-preview.png');
+  
   if (!isOpen) {
     return null;
   }
-
- 
 
   return (
     <Modal transparent visible={isOpen} onRequestClose={onClose}>
@@ -59,32 +57,32 @@ const stylesModal = StyleSheet.create({
   modalImage: {
     width: "100%",
     height: "100%",
-    position: "absolute", // Se posiciona de manera absoluta para que el texto pueda ir encima
+    position: "absolute", 
     resizeMode: "contain",
   },
   modalContainer: {
     width: '100%',
     height: '60%',
-    justifyContent: 'flex-start', // Alinea los elementos hacia la parte superior
+    justifyContent: 'flex-start', 
     alignItems: 'center',
-    paddingTop: 30, // Ajusta según la cantidad de espacio superior que necesites
+    paddingTop: 30, 
   },
   textContainer: {
     justifyContent: "center",
     alignItems: "center",
   },
   textStyle: {
-    color: "white", // Cambia esto según el color deseado
-    fontSize: 24, // Cambia esto según el tamaño deseado
+    color: "white", 
+    fontSize: 24, 
     fontWeight: "bold",
     textShadowColor: "rgba(0, 0, 0, 0.75)",
     textShadowOffset: { width: -1, height: 1 },
     textShadowRadius: 10,
   },
   caraImagen: {
-    width: 200, // Ajusta el tamaño según sea necesario
-    height: 140, // Ajusta el tamaño según sea necesario
-    marginBottom: 10, // Espacio entre la imagen y el texto
+    width: 200, 
+    height: 140, 
+    marginBottom: 10, 
   },
 });
 export default ModalComponent;

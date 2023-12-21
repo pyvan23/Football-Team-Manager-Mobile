@@ -1,26 +1,12 @@
-import React, { useEffect, useState } from "react";
-import ModalComponent from "./ModalComponent";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-  ActivityIndicator,
-  Animated,
-  Modal,
-} from "react-native";
+
+import React from 'react';
+import { View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import AppBackground from '../components/AppBackground';
+import PickJugadores from '../components/PickJugadores';
 
 
-//import { useJugadores } from "../hooks/useJugadores";
-
-const Jugadores = () => {
-  // const { jugadores } = useJugadores();
-
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedJugador, setSelectedJugador] = useState(null);
-  const [cargando, setCargando] = useState(true);
-
+const AdminScreen = () => {
   const jugadores = [
     {
       _id: "656794d2dd94608495446e09",
@@ -224,117 +210,17 @@ const Jugadores = () => {
     },
   ];
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setCargando(jugadores.length === 0);
-    }, 1000);
 
-    return () => clearTimeout(timer);
-  }, [jugadores]);
-
-  const openModalWithJugador = jugador => {
-    setSelectedJugador(jugador);
-    setModalIsOpen(true);
-  };
-
-  const jugadoresOrdenados = jugadores;
- 
-
-  return (
-    <>
-    <ScrollView style={styles.contenedorTabla}>
-      <View style={styles.table}>
-        {/* Encabezado de la Tabla */}
-        <View style={styles.tableHeader}>
-          <Text style={styles.headerItem}>#</Text>
-          <Text style={styles.headerItem}>JUGADORES</Text>
-          <Text style={styles.headerItem}>PTOS</Text>
-          <Text style={styles.headerItem}>ASISTENCIA</Text>
-          <Text style={styles.headerItem}>GANADOS</Text>
-          <Text style={styles.headerItem}>% EFECT.</Text>
-          <Text style={styles.headerItem}>% ASISTENCIA</Text>
-        </View>
-
-        {/* Filas de Jugadores */}
-        {jugadoresOrdenados.map((jugador, index) => (
-          <TouchableOpacity
-            key={jugador._id}
-            style={styles.jugadorFila}
-            onPress={() => openModalWithJugador(jugador)}
-          >
-            <Text style={styles.cell}>{index + 1}</Text>
-            <Text style={styles.cell}>{jugador.nombre}</Text>
-            <Text style={styles.cell}>{jugador.puntos}</Text>
-            <Text style={styles.cell}>{jugador.asistencias}</Text>
-            <Text style={styles.cell}>{jugador.ganados}</Text>
-            <Text style={styles.cell}>{"0"}</Text>
-            <Text style={styles.cell}>{"0"}</Text>
+    const navigation = useNavigation();
+    return (
+        <AppBackground>
+           <PickJugadores jugadores={jugadores}/>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           
-        
-          </TouchableOpacity>
-          
-        ))}
-      </View>
-    </ScrollView>
-    <ModalComponent
-        isOpen={modalIsOpen}
-        onClose={() => setModalIsOpen(false)}
-        jugador={selectedJugador}
-       
-        styles={styles}
-      />
-    </>
-  );
+         
+          </View>
+        </AppBackground>
+      );
 };
 
-const styles = StyleSheet.create({
-  jugadorFila: {
-    padding: 1,
-   flexDirection: "row",
-    borderBottomWidth: 0.5,
-    borderBottomColor: "#ddd",
-  
-  },
- 
-  contenedorTabla: {
-    padding: 45,
-    
-  },
-  table: {
-    width: "100%", 
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.2,
-    shadowRadius: 15,
-    elevation: 20, // Solo Android
-   borderRightColor: "#ddd",
-    backgroundColor: "rgba(255, 255, 255, 0.5)",
-   
-    
-    
-  },
-  tableHeader: {
-    flexDirection: "row",
-    borderRadius:20,  
-    
-    
-  
-  },
-  headerItem: {
-   
-    flex: 1,
-    backgroundColor: '#68ca6c',
-    color:'#300',
-
-  
-   
-    
-  },
-  
-  cell: {
-    flex: 1,
-    // Estilos para las celdas de la tabla
-  },
-});
-
-export default Jugadores;
+export default AdminScreen;
