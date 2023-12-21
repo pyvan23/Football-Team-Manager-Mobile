@@ -1,75 +1,80 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import { View, StyleSheet, Text, TouchableOpacity, Modal, FlatList, Button } from 'react-native';
+
+const JugadorDropdown = ({ label, jugadores, onSelect }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+
+  return (
+    <View style={styles.dropdownContainer}>
+      <Text style={styles.dropdownLabel}>{label}</Text>
+      <TouchableOpacity style={styles.dropdownButton} onPress={() => setModalVisible(true)}>
+        <Text>Selecciona jugador</Text>
+      </TouchableOpacity>
+
+      <Modal
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalView}>
+          <FlatList
+            data={jugadores}
+            keyExtractor={(item) => item._id}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={styles.itemTouchable}
+                onPress={() => {
+                  onSelect(item.nombre);
+                  setModalVisible(false);
+                }}
+              >
+                <Text style={styles.itemText}>{item.nombre}</Text>
+              </TouchableOpacity>
+            )}
+          />
+          <Button title="Cancelar" onPress={() => setModalVisible(false)} />
+        </View>
+      </Modal>
+    </View>
+  );
+};
 
 const PickJugadores = ({ jugadores }) => {
-  const [selectedJugadorBlanco, setSelectedJugadorBlanco] = useState();
-  const [selectedJugadorNegro, setSelectedJugadorNegro] = useState();
   const [equipoBlanco, setEquipoBlanco] = useState([]);
   const [equipoNegro, setEquipoNegro] = useState([]);
 
-  // Establece el jugador actualmente seleccionado en el Picker sin agregarlo a la lista
-  const onSelectJugadorBlanco = (jugador) => {
-    setSelectedJugadorBlanco(jugador);
-  };
-
-  const onSelectJugadorNegro = (jugador) => {
-    setSelectedJugadorNegro(jugador);
-  };
-
-  // Agrega el jugador seleccionado a la lista del equipo correspondiente cuando se presiona el área de texto
-  const onAddJugadorBlanco = () => {
-    if (!equipoBlanco.includes(selectedJugadorBlanco)) {
-      setEquipoBlanco([...equipoBlanco, selectedJugadorBlanco]);
-    }
-  };
-
-  const onAddJugadorNegro = () => {
-    if (!equipoNegro.includes(selectedJugadorNegro)) {
-      setEquipoNegro([...equipoNegro, selectedJugadorNegro]);
+  const agregarJugadorEquipo = (jugador, equipo) => {
+    if (equipo === 'blanco' && !equipoBlanco.includes(jugador)) {
+      setEquipoBlanco([...equipoBlanco, jugador]);
+    } else if (equipo === 'negro' && !equipoNegro.includes(jugador)) {
+      setEquipoNegro([...equipoNegro, jugador]);
     }
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.pickerTitle}>Equipo Blanco</Text>
-      <Picker
-        selectedValue={selectedJugadorBlanco}
-        onValueChange={(itemValue) => onSelectJugadorBlanco(itemValue)}
-        style={styles.picker}
-      >
-        {jugadores.map((jugador) => (
-          <Picker.Item key={jugador._id + 'b'} label={jugador.nombre} value={jugador.nombre} />
+    <View style={styles.container}>
+      <JugadorDropdown
+        label="Equipo Blanco"
+        jugadores={jugadores}
+        onSelect={(jugador) => agregarJugadorEquipo(jugador, 'blanco')}
+      />
+      <View style={styles.lista}>
+        {equipoBlanco.map((jugador, index) => (
+          <Text key={index}>{jugador}</Text>
         ))}
-      </Picker>
-      {selectedJugadorBlanco && (
-        <TouchableOpacity style={styles.addButton} onPress={onAddJugadorBlanco}>
-          <Text>Agregar a Blanco</Text>
-        </TouchableOpacity>
-      )}
-      {equipoBlanco.map((jugador, index) => (
-        <Text key={'blanco_' + index} style={styles.listItem}>{jugador}</Text>
-      ))}
+      </View>
 
-      <Text style={styles.pickerTitle}>Equipo Negro</Text>
-      <Picker
-        selectedValue={selectedJugadorNegro}
-        onValueChange={(itemValue) => onSelectJugadorNegro(itemValue)}
-        style={styles.picker}
-      >
-        {jugadores.map((jugador) => (
-          <Picker.Item key={jugador._id + 'n'} label={jugador.nombre} value={jugador.nombre} />
+      <JugadorDropdown
+        label="Equipo Negro"
+        jugadores={jugadores}
+        onSelect={(jugador) => agregarJugadorEquipo(jugador, 'negro')}
+      />
+      <View style={styles.lista}>
+        {equipoNegro.map((jugador, index) => (
+          <Text key={index}>{jugador}</Text>
         ))}
-      </Picker>
-      {selectedJugadorNegro && (
-        <TouchableOpacity style={styles.addButton} onPress={onAddJugadorNegro}>
-          <Text>Agregar a Negro</Text>
-        </TouchableOpacity>
-      )}
-      {equipoNegro.map((jugador, index) => (
-        <Text key={'negro_' + index} style={styles.listItem}>{jugador}</Text>
-      ))}
-    </ScrollView>
+      </View>
+    </View>
   );
 };
 
@@ -78,26 +83,49 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
   },
-  picker: {
-    width: '100%',
-    height: 150,
+  dropdownContainer: {
+    marginBottom: 20,
   },
-  pickerTitle: {
-    fontSize: 16,
+  dropdownLabel: {
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
   },
-  addButton: {
-    backgroundColor: '#e7e7e7',
-    padding: 10,
+  dropdownButton: {
+    marginTop: 5,
+    padding: 15,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: 'gray',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
     alignItems: 'center',
-    marginVertical: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
-  listItem: {
+  itemTouchable: {
     padding: 10,
-    fontSize: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+  },
+  itemText: {
+    fontSize: 16,
+  },
+  lista: {
+    backgroundColor: '#f0f0f0',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 20,
   },
 });
 
