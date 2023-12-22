@@ -263,7 +263,7 @@ const Jugadores = () => {
             onPress={() => openModalWithJugador(jugador)}
           >
             <Text style={styles.cell}>{index + 1}</Text>
-            <Text style={styles.cell}>{jugador.nombre}</Text>
+            <Text style={[styles.cell,styles.nombreCell]}>{jugador.nombre}</Text>
             <Text style={styles.cell}>{jugador.puntos}</Text>
             <Text style={styles.cell}>{jugador.asistencias}</Text>
             <Text style={styles.cell}>{jugador.ganados}</Text>
@@ -289,51 +289,58 @@ const Jugadores = () => {
 
 const styles = StyleSheet.create({
   jugadorFila: {
-    padding: 1,
-   flexDirection: "row",
-    borderBottomWidth: 0.5,
+    flexDirection: "row",
+    paddingVertical: 10, // Espacio vertical para cada fila
+    paddingHorizontal: 5, // Espacio horizontal para cada fila
+    borderBottomWidth: 1,
     borderBottomColor: "#ddd",
-  
+    backgroundColor: 'rgba(255, 255, 255, 0.8)', // Fondo ligeramente transparente
+    borderRadius: 10, // Bordes redondeados
+    marginVertical: 2, // Espacio entre filas
   },
  
   contenedorTabla: {
-    padding: 45,
-    
+    padding: 20, // Ajuste del padding general
+   
   },
   table: {
     width: "100%", 
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 0 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
-    shadowRadius: 15,
-    elevation: 20, // Solo Android
-   borderRightColor: "#ddd",
-    backgroundColor: "rgba(255, 255, 255, 0.5)",
-   
+    shadowRadius: 5,
+    elevation: 10, // Sombra para Android
     
-    
+    borderRadius: 15, // Bordes redondeados para la tabla
+    overflow: 'hidden', // Asegura que el contenido no se salga del borde redondeado
   },
   tableHeader: {
     flexDirection: "row",
-    borderRadius:20,  
-    
-    
+    backgroundColor: '#4a8af4', // Color del encabezado
+    padding: 2, // Espacio interno del encabezado
+    borderTopLeftRadius: 15, // Redondeo del borde superior izquierdo
+    borderTopRightRadius: 15, // Redondeo del borde superior derecho
   
   },
   headerItem: {
-   
     flex: 1,
-    backgroundColor: '#68ca6c',
-    color:'#300',
-
-  
-   
-    
+    color: 'white', // Texto blanco para el encabezado
+    fontWeight: 'bold', // Texto en negrita
+    textAlign: 'center', // Alineación del texto
   },
   
   cell: {
     flex: 1,
-    // Estilos para las celdas de la tabla
+    textAlign: 'center',
+    // Ajustes adicionales para manejar textos largos
+    overflow: 'hidden', // Ocultar el texto que se sale del contenedor
+    textOverflow: 'ellipsis', // Añadir elipsis si el texto se corta
+  },
+  nombreCell: {
+    flex: 1, // Dar más espacio a la celda del nombre
+    textAlign: 'left', // Alineación a la izquierda para los nombres
+    paddingLeft: 10, // Espacio a la izquierda para evitar que el texto pegue al borde
+  fontSize: 12, // Ajustar el tamaño de la fuente para nombres largos
   },
 });
 
