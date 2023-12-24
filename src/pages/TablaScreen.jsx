@@ -5,6 +5,8 @@ import AppBackground from '../components/AppBackground';
 import Jugadores from '../components/Jugadores';
 
 const TablaScreen = () => {
+
+  
   const navigation = useNavigation();
 
   return (
