@@ -1,15 +1,13 @@
 import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Modal,
-  FlatList,
-  Button,
-} from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import { useJugadores } from "../hooks/useJugadores";
-import { Picker } from "@react-native-picker/picker";
+import { Picker } from '@react-native-picker/picker';
+
+const JugadorItem = ({ jugador, onRemove, indice }) => (
+  <Text style={styles.jugadorItem} onPress={() => onRemove(jugador)}>
+    {`${indice + 1} - ${jugador}`}
+  </Text>
+);
 
 const JugadorDropdown = ({ label, jugadores, onSelect }) => {
   const [selectedJugador, setSelectedJugador] = useState("");
@@ -20,7 +18,7 @@ const JugadorDropdown = ({ label, jugadores, onSelect }) => {
       <Picker
         selectedValue={selectedJugador}
         style={styles.pickerStyle}
-        onValueChange={(itemValue, itemIndex) => {
+        onValueChange={(itemValue) => {
           setSelectedJugador(itemValue);
           onSelect(itemValue);
         }}
@@ -41,16 +39,17 @@ const PickJugadores = () => {
 
   const agregarJugadorEquipo = (jugador, equipo) => {
     if (equipo === "blanco" && !equipoBlanco.includes(jugador)) {
-      setEquipoBlanco([...equipoBlanco, jugador]);
+      setEquipoBlanco((prev) => [...prev, jugador]);
     } else if (equipo === "negro" && !equipoNegro.includes(jugador)) {
-      setEquipoNegro([...equipoNegro, jugador]);
+      setEquipoNegro((prev) => [...prev, jugador]);
     }
   };
+
   const eliminarJugadorEquipo = (jugador, equipo) => {
     if (equipo === "blanco") {
-      setEquipoBlanco(equipoBlanco.filter((item) => item !== jugador));
+      setEquipoBlanco((prev) => prev.filter((item) => item !== jugador));
     } else if (equipo === "negro") {
-      setEquipoNegro(equipoNegro.filter((item) => item !== jugador));
+      setEquipoNegro((prev) => prev.filter((item) => item !== jugador));
     }
   };
 
@@ -58,147 +57,64 @@ const PickJugadores = () => {
     <View style={styles.container}>
       <View style={styles.pickersContainer}>
         <View style={styles.pickerContainer}>
-          <Text style={styles.equipoTitle}>Equipo Blanco</Text>
           <JugadorDropdown
+            label="Equipo Blanco"
             jugadores={jugadores}
             onSelect={(jugador) => agregarJugadorEquipo(jugador, "blanco")}
           />
-          <View style={styles.lista}>
-            {equipoBlanco.map((jugador, index) => (
-              <Text key={index} style={styles.jugadorItem}>
-                {jugador}
-              </Text>
-            ))}
-          </View>
+          {equipoBlanco.map((jugador, index) => (
+            <JugadorItem key={index} indice={index} jugador={jugador} onRemove={(jugador) => eliminarJugadorEquipo(jugador, "blanco")} />
+          ))}
         </View>
 
         <View style={styles.pickerContainer}>
-          <Text style={styles.equipoTitle}>Equipo Negro</Text>
           <JugadorDropdown
+            label="Equipo Negro"
             jugadores={jugadores}
             onSelect={(jugador) => agregarJugadorEquipo(jugador, "negro")}
           />
-          <View style={styles.lista}>
-            {equipoNegro.map((jugador, index) => (
-              <Text key={index} style={styles.jugadorItem}>
-                {jugador}
-              </Text>
-            ))}
-          </View>
+          {equipoNegro.map((jugador, index) => (
+              <JugadorItem key={index} indice={index} jugador={jugador} onRemove={(jugador) => eliminarJugadorEquipo(jugador, "negro")} />
+          ))}
         </View>
       </View>
     </View>
   );
 };
+
 const styles = StyleSheet.create({
-  pickerContainer: {
-    flex: 1,
-    padding: 5,
-  }, pickersContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: "center", // Asegura que el contenedor del modal esté centrado verticalmente
-    alignItems: "center", // Asegura que el contenedor del modal esté centrado horizontalmente
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Fondo semi-transparente para oscurecer el fondo
-  },
   container: {
     flex: 1,
     padding: 20,
   },
+  pickersContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  pickerContainer: {
+    flex: 1,
+    padding: 5,
+  },
   dropdownContainer: {
     marginBottom: 20,
-   
   },
   dropdownLabel: {
     fontSize: 18,
     fontWeight: "bold",
   },
-  dropdownButton: {
-    marginTop: 1,
-    padding: 15,
-    backgroundColor: "white",
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: "gray",
-    backgroundColor: "rgba(255, 255, 255, 0.5)",
-  },
-  modalView: {
-    margin: 20, // Agrega un margen alrededor del modal
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    width: "80%", // Ancho del modal como porcentaje de la pantalla
-    maxWidth: 300, // Ancho máximo del modal para tablets y dispositivos grandes
-  },
-  itemTouchable: {
-    paddingVertical: 15, // Aumentar el padding vertical para dar más espacio
-    paddingHorizontal: 20, // Aumentar el padding horizontal para que se vea más amplio
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-    width: "100%", // Asegurarse de que el toque sea de ancho completo
-  },
-  itemText: {
-    fontSize: 18, // Aumentar el tamaño de la fuente para que los nombres sean más legibles
-    color: "#333",
-  },
- 
-  cancelButton: {
-    marginTop: 20,
-    backgroundColor: "#ff6347",
-    padding: 12, // Aumentar el padding para un botón más grande
-    borderRadius: 5,
-    width: "100%",
-    alignItems: "center",
-  },
-  cancelButtonText: {
-    fontSize: 18, // Aumentar el tamaño de la fuente del botón de cancelar
-    color: "#fff",
-  },
-  equipoHeader: {
-    flexDirection: "row", // Alinea los elementos horizontalmente
-    alignItems: "center", // Centra verticalmente
-    marginBottom: 10,
-  },
-  equipoTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginLeft: 10, // Espacio entre el círculo y el texto
-    color: "white",
-  },
-  teamCircle: {
-    width: 20, // Diámetro del círculo
-    height: 20, // Diámetro del círculo
-    borderRadius: 10, // Redondea las esquinas para formar un círculo
-  },
-  whiteCircle: {
-    backgroundColor: "white", // Círculo blanco
-  },
-  blackCircle: {
-    backgroundColor: "black", // Círculo negro
-  },
-  jugadorItem: {
-    backgroundColor: "rgba(255, 255, 255, 0.5)",
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 5,
-  },
   pickerStyle: {
     height: 50,
     width: '100%',
     color: '#555',
-    backgroundColor:'white' // color del texto dentro del picker
+    backgroundColor: 'white',
+  },
+  jugadorItem: {
+    backgroundColor: "rgba(255, 255, 255, 0.7)",
+    borderRadius: 5,
+    padding: 10,
+    marginVertical: 5,
+    textAlign: 'center',
+    fontSize: 16,
   },
 });
 
