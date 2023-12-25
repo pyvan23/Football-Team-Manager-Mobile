@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { useJugadores } from "../hooks/useJugadores";
 
-//import { useJugadores } from "../hooks/useJugadores";
+
 
 const Jugadores = () => {
   const { jugadores } = useJugadores();

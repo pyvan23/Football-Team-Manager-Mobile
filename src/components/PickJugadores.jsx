@@ -8,58 +8,36 @@ import {
   FlatList,
   Button,
 } from "react-native";
+import { useJugadores } from "../hooks/useJugadores";
+import { Picker } from "@react-native-picker/picker";
 
 const JugadorDropdown = ({ label, jugadores, onSelect }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedJugador, setSelectedJugador] = useState("");
 
   return (
     <View style={styles.dropdownContainer}>
       <Text style={styles.dropdownLabel}>{label}</Text>
-      <TouchableOpacity
-        style={styles.dropdownButton}
-        onPress={() => setModalVisible(true)}
+      <Picker
+        selectedValue={selectedJugador}
+        style={styles.pickerStyle}
+        onValueChange={(itemValue, itemIndex) => {
+          setSelectedJugador(itemValue);
+          onSelect(itemValue);
+        }}
       >
-        <Text style={styles.dropdownButtonText}>Selecciona jugador</Text>
-      </TouchableOpacity>
-
-      <Modal
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalView}>
-            <FlatList
-              data={jugadores}
-              keyExtractor={(item) => item._id.toString()}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.itemTouchable}
-                  onPress={() => {
-                    onSelect(item.nombre);
-                    setModalVisible(false);
-                  }}
-                >
-                  <Text style={styles.itemText}>{item.nombre}</Text>
-                </TouchableOpacity>
-              )}
-            />
-            <TouchableOpacity
-              style={styles.cancelButton}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text style={styles.cancelButtonText}>Cancelar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+        <Picker.Item label="Selecciona jugador" value="" />
+        {jugadores.map((jugador) => (
+          <Picker.Item key={jugador._id} label={jugador.nombre} value={jugador.nombre} />
+        ))}
+      </Picker>
     </View>
   );
 };
 
-const PickJugadores = ({ jugadores }) => {
+const PickJugadores = () => {
   const [equipoBlanco, setEquipoBlanco] = useState([]);
   const [equipoNegro, setEquipoNegro] = useState([]);
+  const { jugadores } = useJugadores();
 
   const agregarJugadorEquipo = (jugador, equipo) => {
     if (equipo === "blanco" && !equipoBlanco.includes(jugador)) {
@@ -78,53 +56,48 @@ const PickJugadores = ({ jugadores }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.equipoHeader}>
-        <View style={[styles.teamCircle, styles.whiteCircle]} />
-        <Text style={styles.equipoTitle}>Equipo Blanco</Text>
-      </View>
-      <JugadorDropdown
-        jugadores={jugadores}
-        onSelect={(jugador) => agregarJugadorEquipo(jugador, "blanco")}
-      />
-      <View style={styles.lista}>
-        {equipoBlanco.map((jugador, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.jugadorItem}
-            onPress={() => eliminarJugadorEquipo(jugador, "blanco")}
-          >
-            <Text>
-              {index + 1} - {jugador}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <View style={styles.pickersContainer}>
+        <View style={styles.pickerContainer}>
+          <Text style={styles.equipoTitle}>Equipo Blanco</Text>
+          <JugadorDropdown
+            jugadores={jugadores}
+            onSelect={(jugador) => agregarJugadorEquipo(jugador, "blanco")}
+          />
+          <View style={styles.lista}>
+            {equipoBlanco.map((jugador, index) => (
+              <Text key={index} style={styles.jugadorItem}>
+                {jugador}
+              </Text>
+            ))}
+          </View>
+        </View>
 
-      <View style={styles.equipoHeader}>
-        <View style={[styles.teamCircle, styles.blackCircle]} />
-        <Text style={styles.equipoTitle}>Equipo Negro</Text>
-      </View>
-      <JugadorDropdown
-        jugadores={jugadores}
-        onSelect={(jugador) => agregarJugadorEquipo(jugador, "negro")}
-      />
-      <View style={styles.lista}>
-        {equipoNegro.map((jugador, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.jugadorItem}
-            onPress={() => eliminarJugadorEquipo(jugador, "negro")}
-          >
-            <Text>
-              {index + 1} - {jugador}
-            </Text>
-          </TouchableOpacity>
-        ))}
+        <View style={styles.pickerContainer}>
+          <Text style={styles.equipoTitle}>Equipo Negro</Text>
+          <JugadorDropdown
+            jugadores={jugadores}
+            onSelect={(jugador) => agregarJugadorEquipo(jugador, "negro")}
+          />
+          <View style={styles.lista}>
+            {equipoNegro.map((jugador, index) => (
+              <Text key={index} style={styles.jugadorItem}>
+                {jugador}
+              </Text>
+            ))}
+          </View>
+        </View>
       </View>
     </View>
   );
 };
 const styles = StyleSheet.create({
+  pickerContainer: {
+    flex: 1,
+    padding: 5,
+  }, pickersContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   modalOverlay: {
     flex: 1,
     justifyContent: "center", // Asegura que el contenedor del modal esté centrado verticalmente
@@ -137,13 +110,14 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     marginBottom: 20,
+   
   },
   dropdownLabel: {
     fontSize: 18,
     fontWeight: "bold",
   },
   dropdownButton: {
-    marginTop: 5,
+    marginTop: 1,
     padding: 15,
     backgroundColor: "white",
     borderRadius: 5,
@@ -219,6 +193,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 5,
+  },
+  pickerStyle: {
+    height: 50,
+    width: '100%',
+    color: '#555',
+    backgroundColor:'white' // color del texto dentro del picker
   },
 });
 
