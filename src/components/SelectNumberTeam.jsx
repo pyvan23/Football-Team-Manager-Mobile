@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { View, Text, Button } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
-const SelectNumberTeam = () => {
+
+const SelectNumberTeam = ({ onNumberSelect }) => {
   const [selectedNumber, setSelectedNumber] = useState(5); // Iniciamos con un valor por defecto
   const [isPickerVisible, setIsPickerVisible] = useState(true);
 
   const handleValueChange = (itemValue) => {
     setSelectedNumber(itemValue);
-    setIsPickerVisible(false); // Ocultar el picker una vez que se selecciona un número
+    onNumberSelect(itemValue); // Aquí se llama al callback con el nuevo valor
+    setIsPickerVisible(false);
   };
 
   return (
@@ -26,12 +28,15 @@ const SelectNumberTeam = () => {
         </Picker>
       ) : (
         <View>
-          <Text>Has seleccionado: {selectedNumber}</Text>
+          <Text style={{color:'white'}}>Equipos de {selectedNumber} jugadores</Text>
           <Button title="Seleccionar otro número" onPress={() => setIsPickerVisible(true)} />
         </View>
       )}
+   
     </View>
+    
   );
 };
+
 
 export default SelectNumberTeam;

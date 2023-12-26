@@ -32,7 +32,7 @@ export const JugadoresProvider = ({ children }) => {
   }, []);
   console.log(jugadores);
   return (
-    <JugadoresContext.Provider value={{ jugadores, }}>
+    <JugadoresContext.Provider value={{ jugadores }}>
       {children}
     </JugadoresContext.Provider>
   );
