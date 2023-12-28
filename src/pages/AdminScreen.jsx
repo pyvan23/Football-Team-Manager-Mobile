@@ -4,6 +4,7 @@ import AppBackground from "../components/AppBackground";
 import SelectNumberTeam from "../components/SelectNumberTeam";
 import PickJugadores from "../components/PickJugadores";
 import Icon from "react-native-vector-icons/FontAwesome";
+import ViewShot from "react-native-view-shot";
 
 const AdminScreen = () => {
   const [selectedTeamNumber, setSelectedTeamNumber] = useState(5);
@@ -31,6 +32,7 @@ const AdminScreen = () => {
 
   return (
     <AppBackground>
+     
       <Icon
         style={{
           position: "absolute",
@@ -50,9 +52,9 @@ const AdminScreen = () => {
         color="white"
         onPress={capturarYCompartir}
       />
-
       <SelectNumberTeam onNumberSelect={setSelectedTeamNumber} />
       <PickJugadores teamSize={selectedTeamNumber} />
+     
     </AppBackground>
   );
 };
